@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<div th:fragment="pagination(page)">
+		
+		<div th:if="${page.show}" class="d-flex justify-content-end">
+		
+			<div class="col-auto me-2">
+				<select id="pageSizeChangeSelect" th:if="${#lists.size(page.sizes) gt 0}" th:attr="data-form-id=${page.sizeChangeFormId}" class="form-select">
+					<option th:each="size : ${page.sizes}" th:selected="${#strings.equals(size, param.size)}" th:value="${size}" th:text="${size}"></option>
+				</select>
+			</div>
+		
+			<a th:href="@{${page.url}(page=0)} + ${page.params}" th:classappend="${page.first} ? 'disabled'" class="btn btn-outline-secondary me-1">
+				<i class="bi-skip-backward"></i>
+			</a>
+			
+			<a th:href="@{${page.url}(page=${page.current - 1})} + ${page.params}" th:classappend="${page.first} ? 'disabled'" class="btn btn-outline-secondary me-1">
+				<i class="bi-skip-start"></i>
+			</a>
+			
+			<a th:each="pageNum : ${page.pages}" th:text="${pageNum + 1}" th:href="@{${page.url}(page = ${pageNum})} + ${page.params}" th:classappend="${page.current == pageNum} ? 'disabled btn-secondary' : 'btn-outline-secondary'" class="btn me-1">
+				1
+			</a>
+			
+			<a th:href="@{${page.url}(page=${page.current + 1})} + ${page.params}" th:classappend="${page.last} ? 'disabled'" class="btn btn-outline-secondary me-1">
+				<i class="bi-skip-end"></i>
+			</a>
+
+			<a th:href="@{${page.url}(page=${page.total - 1})} + ${page.params}" th:classappend="${page.last} ? 'disabled'" class="btn btn-outline-secondary">
+				<i class="bi-skip-forward"></i>
+			</a>
+			
+		</div>
+		
+	</div>
+	
+	<div th:fragment="balanceDetailsList(dto, readonly)" class="card">
+
+		<div class="card-header"><i class="bi-list-check"></i> <span th:text="${dto.header.type}"></span> Details List</div>
+		
+		<div class="card-body">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Item Name</th>
+						<th class="text-end">Unit Price</th>
+						<th class="text-end">Quantity</th>
+						<th class="text-end">Price</th>
+						<th th:unless="${readonly}"></th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr class="align-middle" th:each="item, rowNum : ${dto.validItems}">
+						<td th:text="${rowNum.index + 1}">1</td>
+						<td th:text="${item.item}">test</td>
+						<td th:text="${#numbers.formatInteger(item.unitPrice, 1, 'COMMA')}" class="text-end">100</td>
+						<td th:text="${item.quantity}" class="text-end">3</td>
+						<td th:text="${#numbers.formatInteger(item.unitPrice * item.quantity, 1, 'COMMA')}" class="text-end">100</td>
+						<td th:unless="${readonly}" class="text-center">
+							<a th:href="@{/user/balance-edit/item(index=${rowNum.index})}" class="btn btn-link">
+								<i class="bi-trash"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+				
+				<tfoot th:if="${readonly}">
+					<tr class="text-end">
+						<td colspan="3">Total</td>
+						<td th:text="${#numbers.formatInteger(dto.totalCount, 1, 'COMMA')}"></td>
+						<td th:text="${#numbers.formatInteger(dto.total, 1, 'COMMA')}"></td>
+						<td th:unless="${readonly}"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+
+	</div>
+
+</body>
+</html>

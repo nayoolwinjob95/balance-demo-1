@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layouts/authenticated.html}">
+<head>
+<meta charset="UTF-8">
+<title>Edit Details</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- Summary -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<i class="bi-pie-chart"></i> <span th:text="${balanceEditForm.header.id} eq 0 ? 'Add' : 'Edit'"></span> <span th:text="${balanceEditForm.header.type}"></span>
+			</div>
+
+			<div class="card-body">
+
+				<form th:action="@{/user/balance-edit}" method="post" class="row" th:object="${summaryForm}">
+					<div class="col-auto">
+						<input type="date" th:field="*{date}" class="form-control" />
+						<span class="text-secondary" th:errors="*{date}"></span>
+					</div>
+
+					<div class="col-4">
+						<input type="text" th:field="*{category}" class="form-control" placeholder="Enter Category" />
+						<span class="text-secondary" th:errors="*{category}"></span>
+					</div>
+					
+					<div class="col-2 text-end">
+						<span class="form-control" th:text="${#numbers.formatInteger(balanceEditForm.total, 1, 'COMMA')}">1</span>
+					</div>
+					
+					<div class="col">
+						<a th:href="@{/user/balance-edit}" class="btn btn-outline-secondary">
+							<i class="bi-arrow-left"></i> Back
+						</a>
+						<button type="submit" class="btn btn-outline-primary"><i class="bi-save"></i> Save</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		
+		<!-- Details List -->
+		<div th:replace="/fragments/components :: balanceDetailsList(${balanceEditForm}, true)"></div>
+
+	</div>
+
+</body>
+</html>

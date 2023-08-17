@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layouts/authenticated.html}">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- Search Box -->
+		<div class="card">
+
+			<div class="card-header"><i class="bi-bar-chart"></i> Balance Report</div>
+
+			<div class="card-body">
+
+				<form class="row">
+
+					<div class="col-3">
+						<select name="type" id="type" class="form-select">
+							<option value="">All Type</option>
+							<option th:each="type : ${balanceTypes}" th:value="${type}" th:text="${type}" th:selected="${#strings.equals(param.type, type)}">Incomes</option>
+						</select>
+					</div>
+					
+					<div class="col-auto">
+						<input type="date" th:value="${param.dateFrom}" name="dateFrom" class="form-control" />
+					</div>
+					
+					<div class="col-auto">
+						<input type="date" th:value="${param.dateTo}" name="dateTo" class="form-control" />
+					</div>
+					
+					<div class="col-auto">
+						<button class="btn btn-primary"><i class="bi-search"></i> Search</button>
+					</div>
+
+				</form>
+
+			</div>
+
+		</div>
+		
+		<!-- Result Table -->
+		<table class="table table-striped mt-4">
+		
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Type</th>
+					<th>Category</th>
+					<th class="text-end">Incomes</th>
+					<th class="text-end">Expenses</th>
+					<th class="text-end">Balance</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<tr th:each="data : ${list}">
+					<td th:text="${#temporals.format(data.date, 'yyyy-MM-dd')}">test</td>
+					<td th:text="${data.type}">test</td>
+					<td th:text="${data.category}">test</td>
+					<td th:text="${#numbers.formatInteger(data.income, 1, 'COMMA')}" class="text-end">1</td>
+					<td th:text="${#numbers.formatInteger(data.expense, 1, 'COMMA')}" class="text-end">1</td>
+					<td th:text="${#numbers.formatInteger(data.balance, 1, 'COMMA')}" class="text-end">1</td>
+				</tr>
+			</tbody>
+		
+		</table>
+		
+		<!-- Pagination -->
+		<div th:include="/fragments/components :: pagination(${pagination})"></div>
+
+	</div>
+
+</body>
+</html>
